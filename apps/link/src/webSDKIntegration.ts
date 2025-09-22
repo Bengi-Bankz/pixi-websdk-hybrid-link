@@ -148,12 +148,15 @@ export class WebSDKIntegration {
 		},
 
 		// Position element with safe margins
-		positionWithMargins(element: any, options: {
-			top?: number;
-			right?: number;
-			bottom?: number;
-			left?: number;
-		}) {
+		positionWithMargins(
+			element: any,
+			options: {
+				top?: number;
+				right?: number;
+				bottom?: number;
+				left?: number;
+			},
+		) {
 			const { width, height } = WebSDKIntegration.getViewportSize();
 			const margins = {
 				top: options.top ?? 0,
@@ -169,12 +172,15 @@ export class WebSDKIntegration {
 		},
 
 		// Create responsive grid layout
-		createGrid(items: any[], options: {
-			columns: number;
-			spacing?: number;
-			startX?: number;
-			startY?: number;
-		}) {
+		createGrid(
+			items: any[],
+			options: {
+				columns: number;
+				spacing?: number;
+				startX?: number;
+				startY?: number;
+			},
+		) {
 			const spacing = options.spacing ?? WebSDKIntegration.ui.spacing.md;
 			const startX = options.startX ?? 0;
 			const startY = options.startY ?? 0;
@@ -182,7 +188,7 @@ export class WebSDKIntegration {
 			items.forEach((item, index) => {
 				const row = Math.floor(index / options.columns);
 				const col = index % options.columns;
-				
+
 				item.x = startX + col * (item.width + spacing);
 				item.y = startY + row * (item.height + spacing);
 			});
@@ -192,7 +198,9 @@ export class WebSDKIntegration {
 	// Device and performance utilities
 	static device = {
 		isMobile() {
-			return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+			return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(
+				navigator.userAgent,
+			);
 		},
 
 		isTablet() {
@@ -220,7 +228,7 @@ export class WebSDKIntegration {
 			const ratio = this.getDevicePixelRatio();
 			const { width, height } = WebSDKIntegration.getViewportSize();
 			const totalPixels = width * height * ratio;
-			
+
 			// Use high quality for larger, high-DPI displays
 			return totalPixels > 2073600; // 1920x1080 threshold
 		},
@@ -243,10 +251,10 @@ export class WebSDKIntegration {
 		} {
 			const size = WebSDKIntegration.ui.buttonSizes[options.size ?? 'medium'];
 			const colors = WebSDKIntegration.ui.colors;
-			
+
 			let backgroundColor: number;
 			let textColor: number;
-			
+
 			switch (options.style) {
 				case 'primary':
 					backgroundColor = colors.primary;
@@ -277,7 +285,7 @@ export class WebSDKIntegration {
 		// Apply consistent styling to containers
 		styleContainer(container: any, style: 'panel' | 'popup' | 'overlay') {
 			const colors = WebSDKIntegration.ui.colors;
-			
+
 			switch (style) {
 				case 'panel':
 					container.backgroundColor = colors.background.medium;

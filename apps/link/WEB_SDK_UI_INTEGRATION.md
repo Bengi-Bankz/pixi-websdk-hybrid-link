@@ -7,6 +7,7 @@ This guide explains how to use the Web SDK UI functionalities that have been int
 ### 1. Workspace Package Dependencies
 
 Added the following Web SDK packages to your `package.json`:
+
 - `components-ui-pixi`: Advanced UI components for PixiJS (buttons, labels, layouts)
 - `components-pixi`: Core PixiJS components (Amount, Button, FadeContainer, etc.)
 - `components-layout`: Layout management utilities
@@ -17,6 +18,7 @@ Added the following Web SDK packages to your `package.json`:
 Extended `src/webSDKIntegration.ts` with comprehensive UI utilities:
 
 #### UI Configuration
+
 ```typescript
 import { WebSDKIntegration } from './webSDKIntegration';
 
@@ -31,24 +33,26 @@ const spacing = WebSDKIntegration.ui.spacing.md; // 16
 ```
 
 #### Layout Helpers
+
 ```typescript
 // Center content in viewport
 WebSDKIntegration.layout.centerInViewport(myContainer);
 
 // Position with safe margins
 WebSDKIntegration.layout.positionWithMargins(myButton, {
-  top: 20,
-  right: 20
+	top: 20,
+	right: 20,
 });
 
 // Create responsive grid
 WebSDKIntegration.layout.createGrid(buttons, {
-  columns: 3,
-  spacing: 16
+	columns: 3,
+	spacing: 16,
 });
 ```
 
 #### Device and Responsive Design
+
 ```typescript
 // Check device type
 const isMobile = WebSDKIntegration.device.isMobile();
@@ -63,12 +67,13 @@ const isPortrait = WebSDKIntegration.isPortrait();
 ```
 
 #### Integration Helpers
+
 ```typescript
 // Create consistent button configurations
 const buttonConfig = WebSDKIntegration.integration.createButtonConfig({
-  text: "Click Me",
-  size: "medium",
-  style: "primary"
+	text: 'Click Me',
+	size: 'medium',
+	style: 'primary',
 });
 
 // Apply consistent container styling
@@ -78,6 +83,7 @@ WebSDKIntegration.integration.styleContainer(myPanel, 'popup');
 ### 3. UI Demo Screen
 
 Created `src/app/screens/WebSDKUIDemo.ts` demonstrating:
+
 - Advanced button interactions
 - Responsive design principles
 - Web SDK utility usage
@@ -91,21 +97,21 @@ Access it via the "UI Demo" button on the main screen.
 ### Basic Button with Web SDK Styling
 
 ```typescript
-import { Button } from "../ui/Button";
-import { WebSDKIntegration } from "../../webSDKIntegration";
+import { Button } from '../ui/Button';
+import { WebSDKIntegration } from '../../webSDKIntegration';
 
 // Create button with Web SDK styling
 const config = WebSDKIntegration.integration.createButtonConfig({
-  text: "My Button",
-  size: "large",
-  style: "accent"
+	text: 'My Button',
+	size: 'large',
+	style: 'accent',
 });
 
 const myButton = new Button({
-  text: config.text,
-  width: config.width,
-  height: config.height,
-  fontSize: config.fontSize
+	text: config.text,
+	width: config.width,
+	height: config.height,
+	fontSize: config.fontSize,
 });
 
 // Apply color styling manually or extend Button class
@@ -115,49 +121,49 @@ const myButton = new Button({
 
 ```typescript
 export class MyScreen extends Container {
-  public resize(width: number, height: number) {
-    // Use Web SDK responsive helpers
-    const scaleFactor = WebSDKIntegration.getScaleFactor();
-    const isPortrait = WebSDKIntegration.isPortrait();
-    
-    // Apply responsive scaling
-    this.mainContainer.scale.set(Math.max(0.5, scaleFactor));
-    
-    // Adjust layout based on orientation
-    if (isPortrait) {
-      // Stack elements vertically
-      WebSDKIntegration.layout.createGrid(this.buttons, {
-        columns: 1,
-        spacing: WebSDKIntegration.ui.spacing.lg
-      });
-    } else {
-      // Arrange horizontally
-      WebSDKIntegration.layout.createGrid(this.buttons, {
-        columns: 3,
-        spacing: WebSDKIntegration.ui.spacing.md
-      });
-    }
-  }
+	public resize(width: number, height: number) {
+		// Use Web SDK responsive helpers
+		const scaleFactor = WebSDKIntegration.getScaleFactor();
+		const isPortrait = WebSDKIntegration.isPortrait();
+
+		// Apply responsive scaling
+		this.mainContainer.scale.set(Math.max(0.5, scaleFactor));
+
+		// Adjust layout based on orientation
+		if (isPortrait) {
+			// Stack elements vertically
+			WebSDKIntegration.layout.createGrid(this.buttons, {
+				columns: 1,
+				spacing: WebSDKIntegration.ui.spacing.lg,
+			});
+		} else {
+			// Arrange horizontally
+			WebSDKIntegration.layout.createGrid(this.buttons, {
+				columns: 3,
+				spacing: WebSDKIntegration.ui.spacing.md,
+			});
+		}
+	}
 }
 ```
 
 ### Using Web SDK Utilities
 
 ```typescript
-import { utils } from "../webSDKIntegration";
+import { utils } from '../webSDKIntegration';
 
 export class MyComponent extends Container {
-  async animateIn() {
-    // Use Web SDK timing utilities
-    await utils.waitForTimeout(500);
-    
-    // Use Web SDK random utilities
-    const randomDelay = utils.randomInteger({ min: 100, max: 500 });
-    await utils.waitForTimeout(randomDelay);
-    
-    // Trigger animation
-    animate(this, { alpha: 1 }, { duration: 0.3 });
-  }
+	async animateIn() {
+		// Use Web SDK timing utilities
+		await utils.waitForTimeout(500);
+
+		// Use Web SDK random utilities
+		const randomDelay = utils.randomInteger({ min: 100, max: 500 });
+		await utils.waitForTimeout(randomDelay);
+
+		// Trigger animation
+		animate(this, { alpha: 1 }, { duration: 0.3 });
+	}
 }
 ```
 
@@ -165,28 +171,30 @@ export class MyComponent extends Container {
 
 ```typescript
 export class OptimizedScreen extends Container {
-  constructor() {
-    super();
-    
-    // Adjust quality based on device capabilities
-    const shouldUseHighQuality = WebSDKIntegration.device.shouldUseHighQuality();
-    const deviceCategory = WebSDKIntegration.device.getDeviceCategory();
-    
-    if (deviceCategory === 'mobile') {
-      // Reduce particle count, lower texture resolution, etc.
-      this.setupMobileOptimizations();
-    } else if (shouldUseHighQuality) {
-      // Enable premium effects, higher resolution assets, etc.
-      this.setupHighQualityFeatures();
-    }
-  }
+	constructor() {
+		super();
+
+		// Adjust quality based on device capabilities
+		const shouldUseHighQuality = WebSDKIntegration.device.shouldUseHighQuality();
+		const deviceCategory = WebSDKIntegration.device.getDeviceCategory();
+
+		if (deviceCategory === 'mobile') {
+			// Reduce particle count, lower texture resolution, etc.
+			this.setupMobileOptimizations();
+		} else if (shouldUseHighQuality) {
+			// Enable premium effects, higher resolution assets, etc.
+			this.setupHighQualityFeatures();
+		}
+	}
 }
 ```
 
 ## Available Web SDK Packages
 
 ### components-ui-pixi
+
 Game-specific UI components that are ready to use:
+
 - `ButtonBet` - Betting interface button
 - `ButtonAutoSpin` - Auto-spin functionality
 - `ButtonDrawer` - Collapsible drawer interface
@@ -195,7 +203,9 @@ Game-specific UI components that are ready to use:
 - `LayoutDesktop/Tablet/Portrait` - Responsive layouts
 
 ### components-pixi
+
 Core PixiJS components:
+
 - `Button` - Advanced button component with Svelte integration
 - `Amount` - Number display with formatting
 - `FadeContainer` - Container with fade transitions
@@ -203,9 +213,11 @@ Core PixiJS components:
 - `WinCountUpProvider` - Animated win counter
 
 ### components-layout
+
 Layout management utilities for responsive design and container organization.
 
 ### state-shared
+
 State management utilities that integrate with the UI components for data flow.
 
 ## Next Steps
