@@ -1,4 +1,4 @@
-import { Container, Text, Graphics } from 'pixi.js';
+import { Container, Text, Graphics, Sprite } from 'pixi.js';
 import { animate } from 'motion';
 import { FancyButton } from '@pixi/ui';
 
@@ -21,6 +21,29 @@ export class WebSDKUIDemo extends Container {
 	private demoContainer: Container;
 	private title: Label;
 	private infoPanel: RoundedBox;
+
+	// Render Groups
+	private bgRenderGroup: Container;
+	private symbolsRenderGroup: Container;
+	private uiRenderGroup: Container;
+
+	// Background Sprites
+	private bg1: Sprite;
+	private bg2: Sprite;
+	private bg3: Sprite;
+
+	// Symbol Sprites
+	private symbolH1: Sprite;
+	private symbolH2: Sprite;
+	private symbolH3: Sprite;
+	private symbolH4: Sprite;
+	private symbolH5: Sprite;
+	private symbolL1: Sprite;
+	private symbolL2: Sprite;
+	private symbolL3: Sprite;
+	private symbolL4: Sprite;
+	private symbolS: Sprite;
+	private symbolW: Sprite;
 
 	// Game State
 	private balance = 1000.0;
@@ -60,17 +83,107 @@ export class WebSDKUIDemo extends Container {
 		this.setupInteractions();
 	}
 
+	private setupBackgrounds() {
+		// Background 1 (first, behind others)
+		this.bg1 = Sprite.from('bg1.png');
+		this.bg1.anchor.set(0.5);
+		this.bg1.zIndex = 1;
+		this.bgRenderGroup.addChild(this.bg1);
+
+		// Background 2 (middle)
+		this.bg2 = Sprite.from('bg2.png');
+		this.bg2.anchor.set(0.5);
+		this.bg2.zIndex = 2;
+		this.bgRenderGroup.addChild(this.bg2);
+
+		// Background 3 (last, in front of other backgrounds)
+		this.bg3 = Sprite.from('bg3.png');
+		this.bg3.anchor.set(0.5);
+		this.bg3.zIndex = 3;
+		this.bgRenderGroup.addChild(this.bg3);
+	}
+
 	private setupLayout() {
 		this.mainContainer = new Container();
 		this.addChild(this.mainContainer);
 
-		// Demo container for components
+		// Create render groups with proper z-index ordering
+		this.bgRenderGroup = new Container();
+		this.bgRenderGroup.zIndex = 1;
+		this.bgRenderGroup.sortableChildren = true;
+		this.mainContainer.addChild(this.bgRenderGroup);
+
+		this.symbolsRenderGroup = new Container();
+		this.symbolsRenderGroup.zIndex = 3;
+		this.symbolsRenderGroup.sortableChildren = true;
+		this.mainContainer.addChild(this.symbolsRenderGroup);
+
+		this.uiRenderGroup = new Container();
+		this.uiRenderGroup.zIndex = 2;
+		this.uiRenderGroup.sortableChildren = true;
+		this.mainContainer.addChild(this.uiRenderGroup);
+
+		// Demo container for components (will be moved to UI render group)
 		this.demoContainer = new Container();
-		this.mainContainer.addChild(this.demoContainer);
+		this.uiRenderGroup.addChild(this.demoContainer);
 
 		// Responsive demo container
 		this.responsiveContainer = new Container();
-		this.mainContainer.addChild(this.responsiveContainer);
+		this.uiRenderGroup.addChild(this.responsiveContainer);
+
+		// Enable sorting for main container
+		this.mainContainer.sortableChildren = true;
+
+		// Setup backgrounds
+		this.setupBackgrounds();
+		this.setupSymbols();
+	}
+
+	private setupSymbols() {
+		// Create a grid layout for symbols in the center of the screen
+		const symbolSpacing = 120;
+		const gridWidth = 4; // 4 columns
+		const startX = (-(gridWidth - 1) * symbolSpacing) / 2;
+		const startY = -symbolSpacing;
+
+		// High value symbols (H1-H5)
+		const highSymbols = ['H1.png', 'H2.png', 'H3.png', 'H4.png', 'H5.png'];
+		const highSprites = [
+			(this.symbolH1 = Sprite.from(highSymbols[0])),
+			(this.symbolH2 = Sprite.from(highSymbols[1])),
+			(this.symbolH3 = Sprite.from(highSymbols[2])),
+			(this.symbolH4 = Sprite.from(highSymbols[3])),
+			(this.symbolH5 = Sprite.from(highSymbols[4])),
+		];
+
+		// Low value symbols (L1-L4)
+		const lowSymbols = ['L1.png', 'L2.png', 'L3.png', 'L4.png'];
+		const lowSprites = [
+			(this.symbolL1 = Sprite.from(lowSymbols[0])),
+			(this.symbolL2 = Sprite.from(lowSymbols[1])),
+			(this.symbolL3 = Sprite.from(lowSymbols[2])),
+			(this.symbolL4 = Sprite.from(lowSymbols[3])),
+		];
+
+		// Special symbols
+		this.symbolS = Sprite.from('S.png'); // Scatter
+		this.symbolW = Sprite.from('W.png'); // Wild
+
+		// Arrange symbols in a grid
+		const allSymbols = [...highSprites, ...lowSprites, this.symbolS, this.symbolW];
+
+		allSymbols.forEach((symbol, index) => {
+			symbol.anchor.set(0.5);
+			symbol.scale.set(0.15); // Scale down to fit nicely
+
+			const col = index % gridWidth;
+			const row = Math.floor(index / gridWidth);
+
+			symbol.x = startX + col * symbolSpacing;
+			symbol.y = startY + row * symbolSpacing;
+
+			this.symbolsRenderGroup.addChild(symbol);
+		});
 	}
 
 	private setupComponents() {
@@ -525,6 +638,14 @@ export class WebSDKUIDemo extends Container {
 		this.mainContainer.x = centerX;
 		this.mainContainer.y = centerY;
 
+		// Scale backgrounds to cover the screen
+		const backgroundScale = Math.max(width / 3840, height / 2160) * 1.1; // 1.1 for slight overflow
+		[this.bg1, this.bg2, this.bg3].forEach((bg) => {
+			if (bg) {
+				bg.scale.set(backgroundScale);
+			}
+		});
+
 		// Position back button
 		this.backButton.x = 80;
 		this.backButton.y = 50;
@@ -572,10 +693,27 @@ export class WebSDKUIDemo extends Container {
 			this.settingsButton,
 		];
 
-		for (let i = 0; i < components.length; i++) {
-			const component = components[i];
+		// Add symbols to animation sequence
+		const symbols = [
+			this.symbolH1,
+			this.symbolH2,
+			this.symbolH3,
+			this.symbolH4,
+			this.symbolH5,
+			this.symbolL1,
+			this.symbolL2,
+			this.symbolL3,
+			this.symbolL4,
+			this.symbolS,
+			this.symbolW,
+		];
+
+		const allComponents = [...components, ...symbols];
+
+		for (let i = 0; i < allComponents.length; i++) {
+			const component = allComponents[i];
 			component.alpha = 0;
-			component.scale.set(0.8);
+			component.scale.set(component.scale.x * 0.8, component.scale.y * 0.8);
 
 			animate(component, { alpha: 1 }, { duration: 0.3, delay: i * 0.05 });
 			animate(
