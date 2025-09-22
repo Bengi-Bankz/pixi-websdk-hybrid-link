@@ -115,12 +115,12 @@ export class WebSDKUIDemo extends Container {
 		this.mainContainer.addChild(this.bgRenderGroup);
 
 		this.symbolsRenderGroup = new Container();
-		this.symbolsRenderGroup.zIndex = 3;
+		this.symbolsRenderGroup.zIndex = 2;
 		this.symbolsRenderGroup.sortableChildren = true;
 		this.mainContainer.addChild(this.symbolsRenderGroup);
 
 		this.uiRenderGroup = new Container();
-		this.uiRenderGroup.zIndex = 2;
+		this.uiRenderGroup.zIndex = 3;
 		this.uiRenderGroup.sortableChildren = true;
 		this.mainContainer.addChild(this.uiRenderGroup);
 
@@ -160,13 +160,13 @@ export class WebSDKUIDemo extends Container {
 		const slotFrame = new RoundedBox({
 			width: this.REEL_WIDTH * this.REELS_COUNT + 40, // Add padding
 			height: this.SYMBOL_SIZE * 3 + 40, // 3 visible rows + padding
-			color: 0x1a1a2e,
+			color: 0xffffff,
 			shadow: true,
-			shadowColor: 0x16213e,
+			shadowColor: 0xffffff,
 			shadowOffset: 8,
 		});
-		slotFrame.x = -(slotFrame.width / 2);
-		slotFrame.y = -(slotFrame.height / 2);
+		slotFrame.x = -(slotFrame.width / 17);
+		slotFrame.y = -(slotFrame.height / 3.6);
 		this.symbolsRenderGroup.addChild(slotFrame);
 
 		// Create reel container
