@@ -823,7 +823,7 @@ export class WebSDKUIDemo extends Container {
 		this.backButton.y = 50;
 
 		// Position bottom UI bar at actual bottom of screen
-		const bottomBarY = (height / 2) - 100; // 100px from bottom edge
+		const bottomBarY = height / 2 - 100; // 100px from bottom edge
 		if (this.infoPanel) {
 			this.infoPanel.y = bottomBarY;
 		}
