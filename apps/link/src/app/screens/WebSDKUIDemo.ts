@@ -142,11 +142,17 @@ export class WebSDKUIDemo extends Container {
 	private setupSlotMachine() {
 		// Initialize slot textures
 		this.slotTextures = [
-			Texture.from('H1.png'), Texture.from('H2.png'), Texture.from('H3.png'), 
-			Texture.from('H4.png'), Texture.from('H5.png'), // High value symbols
-			Texture.from('L1.png'), Texture.from('L2.png'), 
-			Texture.from('L3.png'), Texture.from('L4.png'), // Low value symbols
-			Texture.from('S.png'), Texture.from('W.png')    // Special symbols
+			Texture.from('H1.png'),
+			Texture.from('H2.png'),
+			Texture.from('H3.png'),
+			Texture.from('H4.png'),
+			Texture.from('H5.png'), // High value symbols
+			Texture.from('L1.png'),
+			Texture.from('L2.png'),
+			Texture.from('L3.png'),
+			Texture.from('L4.png'), // Low value symbols
+			Texture.from('S.png'),
+			Texture.from('W.png'), // Special symbols
 		];
 
 		// Create reel container
@@ -173,13 +179,14 @@ export class WebSDKUIDemo extends Container {
 
 			// Build symbols for this reel
 			for (let j = 0; j < this.SYMBOLS_PER_REEL; j++) {
-				const randomTexture = this.slotTextures[Math.floor(Math.random() * this.slotTextures.length)];
+				const randomTexture =
+					this.slotTextures[Math.floor(Math.random() * this.slotTextures.length)];
 				const symbol = new Sprite(randomTexture);
 
 				// Position and scale symbol
 				symbol.y = j * this.SYMBOL_SIZE;
 				symbol.scale.set(
-					Math.min(this.SYMBOL_SIZE / symbol.width, this.SYMBOL_SIZE / symbol.height)
+					Math.min(this.SYMBOL_SIZE / symbol.width, this.SYMBOL_SIZE / symbol.height),
 				);
 				symbol.x = Math.round((this.SYMBOL_SIZE - symbol.width) / 2);
 
@@ -199,7 +206,7 @@ export class WebSDKUIDemo extends Container {
 	}
 
 	private startSlotMachineLoop() {
-		// Add to engine ticker for slot machine updates  
+		// Add to engine ticker for slot machine updates
 		engine().ticker.add(this.updateSlotMachine);
 	}
 
@@ -207,7 +214,7 @@ export class WebSDKUIDemo extends Container {
 		// Update reel positions and blur effects
 		for (let i = 0; i < this.reels.length; i++) {
 			const reel = this.reels[i];
-			
+
 			// Update blur filter based on speed
 			reel.blur.blurY = (reel.position - reel.previousPosition) * 8;
 			reel.previousPosition = reel.position;
@@ -217,14 +224,19 @@ export class WebSDKUIDemo extends Container {
 				const symbol = reel.symbols[j];
 				const prevY = symbol.y;
 
-				symbol.y = ((reel.position + j) % reel.symbols.length) * this.SYMBOL_SIZE - this.SYMBOL_SIZE;
-				
+				symbol.y =
+					((reel.position + j) % reel.symbols.length) * this.SYMBOL_SIZE - this.SYMBOL_SIZE;
+
 				// Handle symbol wrapping and texture swapping
 				if (symbol.y < 0 && prevY > this.SYMBOL_SIZE) {
-					const randomTexture = this.slotTextures[Math.floor(Math.random() * this.slotTextures.length)];
+					const randomTexture =
+						this.slotTextures[Math.floor(Math.random() * this.slotTextures.length)];
 					symbol.texture = randomTexture;
 					symbol.scale.set(
-						Math.min(this.SYMBOL_SIZE / symbol.texture.width, this.SYMBOL_SIZE / symbol.texture.height)
+						Math.min(
+							this.SYMBOL_SIZE / symbol.texture.width,
+							this.SYMBOL_SIZE / symbol.texture.height,
+						),
 					);
 					symbol.x = Math.round((this.SYMBOL_SIZE - symbol.width) / 2);
 				}
@@ -243,10 +255,14 @@ export class WebSDKUIDemo extends Container {
 			const tween = this.tweening[i];
 			const phase = Math.min(1, (now - tween.start) / tween.time);
 
-			tween.object[tween.property] = this.lerp(tween.propertyBeginValue, tween.target, tween.easing(phase));
-			
+			tween.object[tween.property] = this.lerp(
+				tween.propertyBeginValue,
+				tween.target,
+				tween.easing(phase),
+			);
+
 			if (tween.change) tween.change(tween);
-			
+
 			if (phase === 1) {
 				tween.object[tween.property] = tween.target;
 				if (tween.complete) tween.complete(tween);
@@ -259,7 +275,15 @@ export class WebSDKUIDemo extends Container {
 		}
 	}
 
-	private tweenTo(object: any, property: string, target: number, time: number, easing: (t: number) => number, onChange?: (tween: any) => void, onComplete?: (tween: any) => void) {
+	private tweenTo(
+		object: any,
+		property: string,
+		target: number,
+		time: number,
+		easing: (t: number) => number,
+		onChange?: (tween: any) => void,
+		onComplete?: (tween: any) => void,
+	) {
 		const tween = {
 			object,
 			property,
@@ -296,13 +320,13 @@ export class WebSDKUIDemo extends Container {
 			const time = 2500 + i * 600 + extra * 600;
 
 			this.tweenTo(
-				reel, 
-				'position', 
-				target, 
-				time, 
-				this.backout(0.5), 
-				undefined, 
-				i === this.reels.length - 1 ? () => this.reelsComplete() : undefined
+				reel,
+				'position',
+				target,
+				time,
+				this.backout(0.5),
+				undefined,
+				i === this.reels.length - 1 ? () => this.reelsComplete() : undefined,
 			);
 		}
 	}
