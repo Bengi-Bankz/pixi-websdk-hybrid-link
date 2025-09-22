@@ -1,4 +1,4 @@
-import { Container, Text, Graphics, Sprite } from 'pixi.js';
+import { Container, Text, Graphics, Sprite, BlurFilter, Texture } from 'pixi.js';
 import { animate } from 'motion';
 import { FancyButton } from '@pixi/ui';
 
@@ -32,18 +32,18 @@ export class WebSDKUIDemo extends Container {
 	private bg2: Sprite;
 	private bg3: Sprite;
 
-	// Symbol Sprites
-	private symbolH1: Sprite;
-	private symbolH2: Sprite;
-	private symbolH3: Sprite;
-	private symbolH4: Sprite;
-	private symbolH5: Sprite;
-	private symbolL1: Sprite;
-	private symbolL2: Sprite;
-	private symbolL3: Sprite;
-	private symbolL4: Sprite;
-	private symbolS: Sprite;
-	private symbolW: Sprite;
+	// Slot Machine System
+	private reels: any[] = [];
+	private reelContainer: Container;
+	private slotTextures: Texture[];
+	private running = false;
+	private tweening: any[] = [];
+
+	// Slot Configuration
+	private readonly REEL_WIDTH = 160;
+	private readonly SYMBOL_SIZE = 150;
+	private readonly REELS_COUNT = 5;
+	private readonly SYMBOLS_PER_REEL = 4; // 3 visible + 1 for seamless scroll
 
 	// Game State
 	private balance = 1000.0;
@@ -136,54 +136,181 @@ export class WebSDKUIDemo extends Container {
 
 		// Setup backgrounds
 		this.setupBackgrounds();
-		this.setupSymbols();
+		this.setupSlotMachine();
 	}
 
-	private setupSymbols() {
-		// Create a grid layout for symbols in the center of the screen
-		const symbolSpacing = 120;
-		const gridWidth = 4; // 4 columns
-		const startX = (-(gridWidth - 1) * symbolSpacing) / 2;
-		const startY = -symbolSpacing;
-
-		// High value symbols (H1-H5)
-		const highSymbols = ['H1.png', 'H2.png', 'H3.png', 'H4.png', 'H5.png'];
-		const highSprites = [
-			(this.symbolH1 = Sprite.from(highSymbols[0])),
-			(this.symbolH2 = Sprite.from(highSymbols[1])),
-			(this.symbolH3 = Sprite.from(highSymbols[2])),
-			(this.symbolH4 = Sprite.from(highSymbols[3])),
-			(this.symbolH5 = Sprite.from(highSymbols[4])),
+	private setupSlotMachine() {
+		// Initialize slot textures
+		this.slotTextures = [
+			Texture.from('H1.png'), Texture.from('H2.png'), Texture.from('H3.png'), 
+			Texture.from('H4.png'), Texture.from('H5.png'), // High value symbols
+			Texture.from('L1.png'), Texture.from('L2.png'), 
+			Texture.from('L3.png'), Texture.from('L4.png'), // Low value symbols
+			Texture.from('S.png'), Texture.from('W.png')    // Special symbols
 		];
 
-		// Low value symbols (L1-L4)
-		const lowSymbols = ['L1.png', 'L2.png', 'L3.png', 'L4.png'];
-		const lowSprites = [
-			(this.symbolL1 = Sprite.from(lowSymbols[0])),
-			(this.symbolL2 = Sprite.from(lowSymbols[1])),
-			(this.symbolL3 = Sprite.from(lowSymbols[2])),
-			(this.symbolL4 = Sprite.from(lowSymbols[3])),
-		];
+		// Create reel container
+		this.reelContainer = new Container();
+		this.symbolsRenderGroup.addChild(this.reelContainer);
 
-		// Special symbols
-		this.symbolS = Sprite.from('S.png'); // Scatter
-		this.symbolW = Sprite.from('W.png'); // Wild
+		// Build the reels
+		for (let i = 0; i < this.REELS_COUNT; i++) {
+			const reelColumn = new Container();
+			reelColumn.x = i * this.REEL_WIDTH;
+			this.reelContainer.addChild(reelColumn);
 
-		// Arrange symbols in a grid
-		const allSymbols = [...highSprites, ...lowSprites, this.symbolS, this.symbolW];
+			const reel = {
+				container: reelColumn,
+				symbols: [] as Sprite[],
+				position: 0,
+				previousPosition: 0,
+				blur: new BlurFilter(),
+			};
 
-		allSymbols.forEach((symbol, index) => {
-			symbol.anchor.set(0.5);
-			symbol.scale.set(0.15); // Scale down to fit nicely
+			reel.blur.blurX = 0;
+			reel.blur.blurY = 0;
+			reelColumn.filters = [reel.blur];
 
-			const col = index % gridWidth;
-			const row = Math.floor(index / gridWidth);
+			// Build symbols for this reel
+			for (let j = 0; j < this.SYMBOLS_PER_REEL; j++) {
+				const randomTexture = this.slotTextures[Math.floor(Math.random() * this.slotTextures.length)];
+				const symbol = new Sprite(randomTexture);
 
-			symbol.x = startX + col * symbolSpacing;
-			symbol.y = startY + row * symbolSpacing;
+				// Position and scale symbol
+				symbol.y = j * this.SYMBOL_SIZE;
+				symbol.scale.set(
+					Math.min(this.SYMBOL_SIZE / symbol.width, this.SYMBOL_SIZE / symbol.height)
+				);
+				symbol.x = Math.round((this.SYMBOL_SIZE - symbol.width) / 2);
 
-			this.symbolsRenderGroup.addChild(symbol);
-		});
+				reel.symbols.push(symbol);
+				reelColumn.addChild(symbol);
+			}
+
+			this.reels.push(reel);
+		}
+
+		// Center the reel container
+		this.reelContainer.x = -(this.REEL_WIDTH * this.REELS_COUNT) / 2;
+		this.reelContainer.y = -(this.SYMBOL_SIZE * 3) / 2; // Center 3 visible rows
+
+		// Start the slot machine update loop
+		this.startSlotMachineLoop();
+	}
+
+	private startSlotMachineLoop() {
+		// Add to engine ticker for slot machine updates  
+		engine().ticker.add(this.updateSlotMachine);
+	}
+
+	private updateSlotMachine = () => {
+		// Update reel positions and blur effects
+		for (let i = 0; i < this.reels.length; i++) {
+			const reel = this.reels[i];
+			
+			// Update blur filter based on speed
+			reel.blur.blurY = (reel.position - reel.previousPosition) * 8;
+			reel.previousPosition = reel.position;
+
+			// Update symbol positions
+			for (let j = 0; j < reel.symbols.length; j++) {
+				const symbol = reel.symbols[j];
+				const prevY = symbol.y;
+
+				symbol.y = ((reel.position + j) % reel.symbols.length) * this.SYMBOL_SIZE - this.SYMBOL_SIZE;
+				
+				// Handle symbol wrapping and texture swapping
+				if (symbol.y < 0 && prevY > this.SYMBOL_SIZE) {
+					const randomTexture = this.slotTextures[Math.floor(Math.random() * this.slotTextures.length)];
+					symbol.texture = randomTexture;
+					symbol.scale.set(
+						Math.min(this.SYMBOL_SIZE / symbol.texture.width, this.SYMBOL_SIZE / symbol.texture.height)
+					);
+					symbol.x = Math.round((this.SYMBOL_SIZE - symbol.width) / 2);
+				}
+			}
+		}
+
+		// Update tweening
+		this.updateTweening();
+	};
+
+	private updateTweening() {
+		const now = Date.now();
+		const toRemove: any[] = [];
+
+		for (let i = 0; i < this.tweening.length; i++) {
+			const tween = this.tweening[i];
+			const phase = Math.min(1, (now - tween.start) / tween.time);
+
+			tween.object[tween.property] = this.lerp(tween.propertyBeginValue, tween.target, tween.easing(phase));
+			
+			if (tween.change) tween.change(tween);
+			
+			if (phase === 1) {
+				tween.object[tween.property] = tween.target;
+				if (tween.complete) tween.complete(tween);
+				toRemove.push(tween);
+			}
+		}
+
+		for (const tween of toRemove) {
+			this.tweening.splice(this.tweening.indexOf(tween), 1);
+		}
+	}
+
+	private tweenTo(object: any, property: string, target: number, time: number, easing: (t: number) => number, onChange?: (tween: any) => void, onComplete?: (tween: any) => void) {
+		const tween = {
+			object,
+			property,
+			propertyBeginValue: object[property],
+			target,
+			easing,
+			time,
+			change: onChange,
+			complete: onComplete,
+			start: Date.now(),
+		};
+
+		this.tweening.push(tween);
+		return tween;
+	}
+
+	private lerp(a: number, b: number, t: number): number {
+		return a * (1 - t) + b * t;
+	}
+
+	private backout(amount: number) {
+		return (t: number) => --t * t * ((amount + 1) * t + amount) + 1;
+	}
+
+	// Slot machine spin functionality
+	private startSpin() {
+		if (this.running) return;
+		this.running = true;
+
+		for (let i = 0; i < this.reels.length; i++) {
+			const reel = this.reels[i];
+			const extra = Math.floor(Math.random() * 3);
+			const target = reel.position + 10 + i * 5 + extra;
+			const time = 2500 + i * 600 + extra * 600;
+
+			this.tweenTo(
+				reel, 
+				'position', 
+				target, 
+				time, 
+				this.backout(0.5), 
+				undefined, 
+				i === this.reels.length - 1 ? () => this.reelsComplete() : undefined
+			);
+		}
+	}
+
+	private reelsComplete() {
+		this.running = false;
+		// TODO: Connect to RGS result handling here
+		console.log('Spin complete - ready for RGS integration');
 	}
 
 	private setupComponents() {
@@ -420,6 +547,7 @@ export class WebSDKUIDemo extends Container {
 		// Play Button - Main game action
 		this.playButton.onPress.connect(async () => {
 			if (this.balance >= this.betAmount) {
+				this.startSpin(); // Use slot machine spin instead
 				await this.playGame();
 			} else {
 				this.showInsufficientFundsMessage();
@@ -693,25 +821,9 @@ export class WebSDKUIDemo extends Container {
 			this.settingsButton,
 		];
 
-		// Add symbols to animation sequence
-		const symbols = [
-			this.symbolH1,
-			this.symbolH2,
-			this.symbolH3,
-			this.symbolH4,
-			this.symbolH5,
-			this.symbolL1,
-			this.symbolL2,
-			this.symbolL3,
-			this.symbolL4,
-			this.symbolS,
-			this.symbolW,
-		];
-
-		const allComponents = [...components, ...symbols];
-
-		for (let i = 0; i < allComponents.length; i++) {
-			const component = allComponents[i];
+		// Animate UI components
+		for (let i = 0; i < components.length; i++) {
+			const component = components[i];
 			component.alpha = 0;
 			component.scale.set(component.scale.x * 0.8, component.scale.y * 0.8);
 
@@ -726,10 +838,18 @@ export class WebSDKUIDemo extends Container {
 				},
 			);
 		}
+
+		// Animate reel container
+		if (this.reelContainer) {
+			this.reelContainer.alpha = 0;
+			animate(this.reelContainer, { alpha: 1 }, { duration: 0.5, delay: 0.2 });
+		}
 	}
 
 	/** Hide screen with animations */
 	public async hide() {
+		// Clean up ticker
+		engine().ticker.remove(this.updateSlotMachine);
 		await animate(this, { alpha: 0 }, { duration: 0.3, ease: 'easeIn' });
 	}
 }
