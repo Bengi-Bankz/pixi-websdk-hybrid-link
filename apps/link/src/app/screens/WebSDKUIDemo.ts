@@ -354,9 +354,9 @@ export class WebSDKUIDemo extends Container {
 	private setupComponents() {
 		// Title - keep at top
 		this.title = new Label({
-			text: 'Slot Machine Demo',
+			text: 'C.R.E.A.M. LINK',
 			style: {
-				fontSize: 36,
+				fontSize: 56,
 				fill: 0xffffff,
 				fontWeight: 'bold',
 			},
@@ -367,7 +367,7 @@ export class WebSDKUIDemo extends Container {
 		// Create bottom UI panel
 		this.infoPanel = new RoundedBox({
 			width: 900,
-			height: 140, // Smaller height for bottom bar
+			height: 100, // Smaller height for bottom bar
 			color: 0x1a1a2e,
 			shadow: true,
 			shadowColor: 0x16213e,
@@ -383,9 +383,9 @@ export class WebSDKUIDemo extends Container {
 
 		// Balance Display - left side of bottom bar
 		this.balanceDisplay = new Label({
-			text: `Balance: $${this.balance.toFixed(2)}`,
+			text: `$${this.balance.toFixed(2)}`,
 			style: {
-				fontSize: 20,
+				fontSize: 30,
 				fill: 0x00ff88,
 				fontWeight: 'bold',
 			},
@@ -396,9 +396,9 @@ export class WebSDKUIDemo extends Container {
 
 		// Bet Display - left-center of bottom bar
 		this.betDisplay = new Label({
-			text: `Bet: $${this.betAmount.toFixed(2)}`,
+			text: `: $${this.betAmount.toFixed(2)}`,
 			style: {
-				fontSize: 18,
+				fontSize: 30,
 				fill: 0xffff00,
 				fontWeight: 'bold',
 			},
@@ -411,7 +411,7 @@ export class WebSDKUIDemo extends Container {
 		this.winDisplay = new Label({
 			text: `Win: $${this.winAmount.toFixed(2)}`,
 			style: {
-				fontSize: 20,
+				fontSize: 30,
 				fill: 0xff4444,
 				fontWeight: 'bold',
 			},
@@ -437,7 +437,7 @@ export class WebSDKUIDemo extends Container {
 		this.betIncreaseButton = new FancyButton({
 			defaultView: 'increase.png',
 			anchor: 0.5,
-			scale: 0.5,
+			scale: 1.2,
 			animations: {
 				hover: { props: { scale: { x: 0.55, y: 0.55 } }, duration: 100 },
 				pressed: { props: { scale: { x: 0.45, y: 0.45 } }, duration: 100 },
@@ -451,7 +451,7 @@ export class WebSDKUIDemo extends Container {
 		this.betDecreaseButton = new FancyButton({
 			defaultView: 'decrease.png',
 			anchor: 0.5,
-			scale: 0.5,
+			scale: 1.2,
 			animations: {
 				hover: { props: { scale: { x: 0.55, y: 0.55 } }, duration: 100 },
 				pressed: { props: { scale: { x: 0.45, y: 0.45 } }, duration: 100 },
@@ -465,7 +465,7 @@ export class WebSDKUIDemo extends Container {
 		this.autoButton = new FancyButton({
 			defaultView: 'auto.png',
 			anchor: 0.5,
-			scale: 0.4,
+			scale: 1.2,
 			animations: {
 				hover: { props: { scale: { x: 0.45, y: 0.45 } }, duration: 100 },
 				pressed: { props: { scale: { x: 0.35, y: 0.35 } }, duration: 100 },
@@ -479,7 +479,7 @@ export class WebSDKUIDemo extends Container {
 		this.turboButton = new FancyButton({
 			defaultView: 'turbo-off.png',
 			anchor: 0.5,
-			scale: 0.4,
+			scale: 1.2,
 			animations: {
 				hover: { props: { scale: { x: 0.45, y: 0.45 } }, duration: 100 },
 				pressed: { props: { scale: { x: 0.35, y: 0.35 } }, duration: 100 },
@@ -493,7 +493,7 @@ export class WebSDKUIDemo extends Container {
 		this.volumeButton = new FancyButton({
 			defaultView: 'vol-on.png',
 			anchor: 0.5,
-			scale: 0.4,
+			scale: 1,
 			animations: {
 				hover: { props: { scale: { x: 0.45, y: 0.45 } }, duration: 100 },
 				pressed: { props: { scale: { x: 0.35, y: 0.35 } }, duration: 100 },
@@ -507,21 +507,21 @@ export class WebSDKUIDemo extends Container {
 		this.menuButton = new FancyButton({
 			defaultView: 'menu.png',
 			anchor: 0.5,
-			scale: 0.4,
+			scale: 2,
 			animations: {
 				hover: { props: { scale: { x: 0.45, y: 0.45 } }, duration: 100 },
 				pressed: { props: { scale: { x: 0.35, y: 0.35 } }, duration: 100 },
 			},
 		});
-		this.menuButton.x = 250;
-		this.menuButton.y = 20;
+		this.menuButton.x = -350;
+		this.menuButton.y = 10;
 		this.bottomUIContainer.addChild(this.menuButton);
 
 		// Pause Button (keep at top left of screen, not in bottom bar)
 		this.pauseButton = new FancyButton({
 			defaultView: 'icon-pause.png',
 			anchor: 0.5,
-			scale: 0.6,
+			scale: 0.0,
 			animations: {
 				hover: { props: { scale: { x: 0.65, y: 0.65 } }, duration: 100 },
 				pressed: { props: { scale: { x: 0.55, y: 0.55 } }, duration: 100 },
@@ -535,7 +535,7 @@ export class WebSDKUIDemo extends Container {
 		this.settingsButton = new FancyButton({
 			defaultView: 'icon-settings.png',
 			anchor: 0.5,
-			scale: 0.6,
+			scale: 0,
 			animations: {
 				hover: { props: { scale: { x: 0.65, y: 0.65 } }, duration: 100 },
 				pressed: { props: { scale: { x: 0.55, y: 0.55 } }, duration: 100 },
@@ -596,43 +596,64 @@ export class WebSDKUIDemo extends Container {
 			} else {
 				this.showInsufficientFundsMessage();
 			}
-			this.playButtonFeedback();
+			engine().audio.sfx.play('main/sounds/sfx-press.wav', { volume: 0.7 });
+		});
+		this.playButton.onHover.connect(() => {
+			engine().audio.sfx.play('main/sounds/sfx-hover.wav', { volume: 0.5 });
 		});
 
 		// Bet Increase Button
 		this.betIncreaseButton.onPress.connect(() => {
 			this.increaseBet();
-			this.playButtonFeedback();
+			engine().audio.sfx.play('main/sounds/sfx-press.wav', { volume: 0.7 });
+		});
+		this.betIncreaseButton.onHover.connect(() => {
+			engine().audio.sfx.play('main/sounds/sfx-hover.wav', { volume: 0.5 });
 		});
 
 		// Bet Decrease Button
 		this.betDecreaseButton.onPress.connect(() => {
 			this.decreaseBet();
-			this.playButtonFeedback();
+			engine().audio.sfx.play('main/sounds/sfx-press.wav', { volume: 0.7 });
+		});
+		this.betDecreaseButton.onHover.connect(() => {
+			engine().audio.sfx.play('main/sounds/sfx-hover.wav', { volume: 0.5 });
 		});
 
 		// Auto Play Button
 		this.autoButton.onPress.connect(() => {
 			this.toggleAutoPlay();
-			this.playButtonFeedback();
+			engine().audio.sfx.play('main/sounds/sfx-press.wav', { volume: 0.7 });
+		});
+		this.autoButton.onHover.connect(() => {
+			engine().audio.sfx.play('main/sounds/sfx-hover.wav', { volume: 0.5 });
 		});
 
 		// Turbo Button
 		this.turboButton.onPress.connect(() => {
 			this.toggleTurbo();
-			this.playButtonFeedback();
+			engine().audio.sfx.play('main/sounds/sfx-press.wav', { volume: 0.7 });
+		});
+		this.turboButton.onHover.connect(() => {
+			engine().audio.sfx.play('main/sounds/sfx-hover.wav', { volume: 0.5 });
 		});
 
 		// Volume Button
 		this.volumeButton.onPress.connect(() => {
 			this.toggleSound();
-			this.playButtonFeedback();
+			engine().audio.sfx.play('main/sounds/sfx-press.wav', { volume: 0.7 });
+		});
+		this.volumeButton.onHover.connect(() => {
+			engine().audio.sfx.play('main/sounds/sfx-hover.wav', { volume: 0.5 });
 		});
 
 		// Menu Button
 		this.menuButton.onPress.connect(() => {
 			this.showMenu();
-			this.playButtonFeedback();
+			engine().audio.sfx.play('main/sounds/sfx-press.wav', { volume: 0.7 });
+		});
+		this.menuButton.onHover.connect(() => {
+			engine().audio.sfx.play('main/sounds/sfx-hover.wav', { volume: 0.5 });
 		});
 
 		// Pause Button
@@ -641,6 +662,10 @@ export class WebSDKUIDemo extends Container {
 				// Import and use your PausePopup
 				(globalThis as any).PausePopup || (Container as any),
 			);
+			engine().audio.sfx.play('main/sounds/sfx-press.wav', { volume: 0.7 });
+		});
+		this.pauseButton.onHover.connect(() => {
+			engine().audio.sfx.play('main/sounds/sfx-hover.wav', { volume: 0.5 });
 		});
 
 		// Settings Button
@@ -649,6 +674,10 @@ export class WebSDKUIDemo extends Container {
 				// Import and use your SettingsPopup
 				(globalThis as any).SettingsPopup || (Container as any),
 			);
+			engine().audio.sfx.play('main/sounds/sfx-press.wav', { volume: 0.7 });
+		});
+		this.settingsButton.onHover.connect(() => {
+			engine().audio.sfx.play('main/sounds/sfx-hover.wav', { volume: 0.5 });
 		});
 
 		// Back button
@@ -657,6 +686,10 @@ export class WebSDKUIDemo extends Container {
 			import('./main/MainScreen').then(({ MainScreen }) => {
 				engine().navigation.showScreen(MainScreen);
 			});
+			engine().audio.sfx.play('main/sounds/sfx-press.wav', { volume: 0.7 });
+		});
+		this.backButton.onHover.connect(() => {
+			engine().audio.sfx.play('main/sounds/sfx-hover.wav', { volume: 0.5 });
 		});
 	}
 
@@ -792,11 +825,6 @@ export class WebSDKUIDemo extends Container {
 			`Scale: ${scaleFactor}x`;
 	}
 
-	private playButtonFeedback() {
-		// Use existing audio system
-		engine().audio.sfx.play('main/sounds/sfx-press.wav', { volume: 0.7 });
-	}
-
 	/** Prepare the screen */
 	public prepare() {
 		this.updateResponsiveInfo();
@@ -811,7 +839,7 @@ export class WebSDKUIDemo extends Container {
 		this.mainContainer.y = centerY;
 
 		// Scale backgrounds to cover the screen
-		const backgroundScale = Math.max(width / 3840, height / 2160) * 1.1; // 1.1 for slight overflow
+		const backgroundScale = Math.max(width / 3840, height / 2160) * 0.9; // 0.6 for slight overflow
 		[this.bg1, this.bg2, this.bg3].forEach((bg) => {
 			if (bg) {
 				bg.scale.set(backgroundScale);
@@ -823,7 +851,7 @@ export class WebSDKUIDemo extends Container {
 		this.backButton.y = 50;
 
 		// Position bottom UI bar at actual bottom of screen
-		const bottomBarY = height / 2 - 100; // 100px from bottom edge
+		const bottomBarY = height / 2 - 20; // 20px from bottom edge
 		if (this.infoPanel) {
 			this.infoPanel.y = bottomBarY;
 		}
