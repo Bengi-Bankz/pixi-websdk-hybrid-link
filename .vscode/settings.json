@@ -20,8 +20,33 @@
 	"typescript.updateImportsOnFileMove.enabled": "never",
 	"typescript.preferences.importModuleSpecifier": "non-relative",
 	"search.exclude": {
-		"**/node_modules": true
+		"**/node_modules": true,
+		"**/.turbo": true,
+		"**/.svelte-kit": true,
+		"**/.assetpack": true,
+		"**/dist": true,
+		"**/build": true,
+		"**/.pnpm": true
 	},
+	"files.exclude": {
+		"**/node_modules": true,
+		"**/.turbo": true,
+		"**/.svelte-kit": true,
+		"**/.assetpack": true,
+		"**/dist": true,
+		"**/build": true,
+		"**/.pnpm": true
+	},
+	"files.watcherExclude": {
+		"**/node_modules/**": true,
+		"**/.turbo/**": true,
+		"**/.svelte-kit/**": true,
+		"**/.assetpack/**": true,
+		"**/dist/**": true,
+		"**/build/**": true,
+		"**/.pnpm/**": true
+	},
+	"git.ignoreLimitWarning": true,
 	"files.autoSave": "off",
 	"diffEditor.ignoreTrimWhitespace": false,
 	"breadcrumbs.enabled": true,
@@ -43,12 +68,7 @@
 		"package.json": "package-lock.json, yarn.lock, pnpm-lock.yaml"
 	},
 	"window.commandCenter": true,
-	"cSpell.words": [
-		"bigwin",
-		"Payline",
-		"pixi",
-		"xstate"
-	],
+	"cSpell.words": ["bigwin", "Payline", "pixi", "xstate"],
 	"workbench.editor.empty.hint": "hidden",
 	"scm.showHistoryGraph": false
 }

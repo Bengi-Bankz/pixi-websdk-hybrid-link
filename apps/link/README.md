@@ -14,6 +14,7 @@ This project demonstrates how to integrate a standalone PixiJS Creation Template
 ## ✨ Benefits
 
 ### From PixiJS Creation Template
+
 - 🚀 **Creation Engine** - Advanced game engine with built-in navigation, audio, and lifecycle management
 - 📦 **AssetPack Integration** - Automatic asset optimization, sprite sheet generation, and manifest creation
 - 📱 **Responsive Design** - Built-in viewport management and resize handling
@@ -23,6 +24,7 @@ This project demonstrates how to integrate a standalone PixiJS Creation Template
 - 🎨 **UI Components** - Pre-built buttons, animations, and interactive elements
 
 ### From Web SDK Monorepo
+
 - 🔧 **Shared Utilities** - Access to battle-tested functions for timing, randomization, and more
 - 📋 **Consistent Configs** - Unified ESLint, TypeScript, and build configurations
 - 🏢 **Monorepo Benefits** - Shared dependencies, cross-package imports, and unified tooling
@@ -52,10 +54,12 @@ apps/link/
 ## 🚦 Getting Started
 
 ### Prerequisites
+
 - Node.js 22.16.0+ (recommended)
 - pnpm 10.5.0+
 
 ### Development
+
 ```bash
 # From the monorepo root
 cd web-sdk
@@ -68,6 +72,7 @@ pnpm run dev --filter=link
 ```
 
 ### Building
+
 ```bash
 # Build for production
 pnpm run build --filter=link
@@ -76,7 +81,9 @@ pnpm run build --filter=link
 ## 🛠️ Key Features
 
 ### Creation Engine
+
 The app uses a sophisticated engine that provides:
+
 - **Screen Management** - Navigate between different game screens
 - **Audio Management** - Background music and sound effects
 - **Popup System** - Modal dialogs and overlays
@@ -84,14 +91,18 @@ The app uses a sophisticated engine that provides:
 - **Asset Loading** - Efficient resource management
 
 ### AssetPack Integration
+
 Automatic asset processing that:
+
 - **Optimizes Images** - Compression and format conversion
 - **Generates Sprites** - Automatic sprite sheet creation
 - **Creates Manifests** - Asset loading configurations
 - **Handles Multiple Formats** - Support for various image and audio formats
 
 ### Web SDK Utilities
+
 Access to proven utilities:
+
 ```typescript
 import { WebSDKIntegration, utils } from './webSDKIntegration';
 
@@ -110,40 +121,43 @@ const scaleFactor = WebSDKIntegration.getScaleFactor();
 ## 🎮 Example Usage
 
 ### Creating a New Screen
+
 ```typescript
 import { Container } from 'pixi.js';
 import { WebSDKIntegration, utils } from '../../../webSDKIntegration';
 
 export class MyGameScreen extends Container {
-  public static assetBundles = ["gameplay"];
+	public static assetBundles = ['gameplay'];
 
-  constructor() {
-    super();
-    this.setupGameplay();
-  }
+	constructor() {
+		super();
+		this.setupGameplay();
+	}
 
-  private async setupGameplay() {
-    // Use Web SDK utilities
-    const randomSeed = utils.randomInteger({ min: 1, max: 1000 });
-    
-    // Access engine features
-    const stage = WebSDKIntegration.getStage();
-    
-    // Your game logic here
-  }
+	private async setupGameplay() {
+		// Use Web SDK utilities
+		const randomSeed = utils.randomInteger({ min: 1, max: 1000 });
 
-  public resize(width: number, height: number) {
-    // Responsive design with Web SDK helpers
-    const scaleFactor = WebSDKIntegration.getScaleFactor();
-    this.scale.set(scaleFactor);
-  }
+		// Access engine features
+		const stage = WebSDKIntegration.getStage();
+
+		// Your game logic here
+	}
+
+	public resize(width: number, height: number) {
+		// Responsive design with Web SDK helpers
+		const scaleFactor = WebSDKIntegration.getScaleFactor();
+		this.scale.set(scaleFactor);
+	}
 }
 ```
 
 ### Using AssetPack
+
 1. Add assets to `raw-assets/` folder
 2. AssetPack automatically processes them during development
 3. Access optimized assets in your code:
+
 ```typescript
 // AssetPack generates optimized versions automatically
 const texture = await Assets.load('my-sprite.png');
@@ -162,12 +176,14 @@ const texture = await Assets.load('my-sprite.png');
 ### When to Use This Setup
 
 ✅ **Perfect for:**
+
 - Complex PixiJS games that need professional tooling
 - Teams wanting to leverage existing Web SDK infrastructure
 - Projects requiring both standalone and integrated development
 - Learning and experimenting with different architectures
 
 ❌ **Consider alternatives for:**
+
 - Simple games that don't need advanced asset processing
 - Pure Web SDK projects following established patterns
 - Projects with strict architectural requirements
@@ -175,6 +191,7 @@ const texture = await Assets.load('my-sprite.png');
 ## 🤝 Contributing
 
 This setup demonstrates integration patterns that can be applied to other projects in the monorepo. Feel free to:
+
 - Enhance the Web SDK integration layer
 - Add more utility bridges between systems
 - Share learnings with other app developers
@@ -196,4 +213,4 @@ This setup demonstrates integration patterns that can be applied to other projec
 
 ---
 
-*This project showcases how modern web development can benefit from combining specialized tools with monorepo architectures for maximum flexibility and power.*
+_This project showcases how modern web development can benefit from combining specialized tools with monorepo architectures for maximum flexibility and power._

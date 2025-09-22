@@ -1,36 +1,40 @@
 {
-  "name": "link",
-  "version": "0.0.0",
-  "private": true,
-  "license": "MIT",
-  "type": "module",
-  "scripts": {
-    "format": "prettier --write --ignore-path=../../.prettierignore .",
-    "lint": "eslint \"src\"",
-    "storybook": "cross-env PUBLIC_CHROMATIC=true storybook dev -p 6006 public",
-    "dev": "vite dev --host --port 3006",
-    "build": "vite build",
-    "preview": "vite preview"
-  },
-  "dependencies": {
-    "@esotericsoftware/spine-pixi-v8": "^4.2.74",
-    "@pixi/sound": "^6.0.1",
-    "@pixi/ui": "^2.2.2",
-    "motion": "^12.4.7",
-    "pixi.js": "^8.8.1",
-    "lodash": "4.17.16",
-    "@types/lodash": "4.17.16",
-    "constants-shared": "workspace:*",
-    "utils-shared": "workspace:*",
-    "utils-sound": "workspace:*",
-    "vite": "6.2.0"
-  },
-  "devDependencies": {
-    "@assetpack/core": "^1.4.0",
-    "cross-env": "^10.0.0",
-    "eslint": "9.21.0",
-    "eslint-config-custom": "workspace:*",
-    "config-ts": "workspace:*",
-    "typescript": "~5.7.3"
-  }
+	"name": "link",
+	"version": "0.0.0",
+	"private": true,
+	"license": "MIT",
+	"type": "module",
+	"scripts": {
+		"format": "prettier --write --ignore-path=../../.prettierignore .",
+		"lint": "eslint \"src\"",
+		"storybook": "cross-env PUBLIC_CHROMATIC=true storybook dev -p 6006 public",
+		"dev": "vite dev --host --port 3006",
+		"build": "vite build",
+		"preview": "vite preview"
+	},
+	"dependencies": {
+		"@esotericsoftware/spine-pixi-v8": "^4.2.74",
+		"@pixi/sound": "^6.0.1",
+		"@pixi/ui": "^2.2.2",
+		"motion": "^12.4.7",
+		"pixi.js": "^8.8.1",
+		"lodash": "4.17.16",
+		"@types/lodash": "4.17.16",
+		"constants-shared": "workspace:*",
+		"utils-shared": "workspace:*",
+		"utils-sound": "workspace:*",
+		"components-ui-pixi": "workspace:*",
+		"components-pixi": "workspace:*",
+		"components-layout": "workspace:*",
+		"state-shared": "workspace:*",
+		"vite": "6.2.0"
+	},
+	"devDependencies": {
+		"@assetpack/core": "^1.4.0",
+		"cross-env": "^10.0.0",
+		"eslint": "9.21.0",
+		"eslint-config-custom": "workspace:*",
+		"config-ts": "workspace:*",
+		"typescript": "~5.7.3"
+	}
 }
