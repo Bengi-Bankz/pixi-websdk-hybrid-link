@@ -21,6 +21,7 @@ export class WebSDKUIDemo extends Container {
 	private demoContainer: Container;
 	private title: Label;
 	private infoPanel: RoundedBox;
+	private bottomUIContainer: Container;
 
 	// Render Groups
 	private bgRenderGroup: Container;
@@ -154,6 +155,19 @@ export class WebSDKUIDemo extends Container {
 			Texture.from('S.png'),
 			Texture.from('W.png'), // Special symbols
 		];
+
+		// Create slot machine frame
+		const slotFrame = new RoundedBox({
+			width: this.REEL_WIDTH * this.REELS_COUNT + 40, // Add padding
+			height: this.SYMBOL_SIZE * 3 + 40, // 3 visible rows + padding
+			color: 0x1a1a2e,
+			shadow: true,
+			shadowColor: 0x16213e,
+			shadowOffset: 8,
+		});
+		slotFrame.x = -(slotFrame.width / 2);
+		slotFrame.y = -(slotFrame.height / 2);
+		this.symbolsRenderGroup.addChild(slotFrame);
 
 		// Create reel container
 		this.reelContainer = new Container();
@@ -338,9 +352,9 @@ export class WebSDKUIDemo extends Container {
 	}
 
 	private setupComponents() {
-		// Title
+		// Title - keep at top
 		this.title = new Label({
-			text: 'Betting Interface Demo',
+			text: 'Slot Machine Demo',
 			style: {
 				fontSize: 36,
 				fill: 0xffffff,
@@ -350,182 +364,188 @@ export class WebSDKUIDemo extends Container {
 		this.title.y = -320;
 		this.demoContainer.addChild(this.title);
 
-		// Info panel background - larger to accommodate betting interface
+		// Create bottom UI panel
 		this.infoPanel = new RoundedBox({
-			width: 800,
-			height: 500,
+			width: 900,
+			height: 140, // Smaller height for bottom bar
 			color: 0x1a1a2e,
 			shadow: true,
 			shadowColor: 0x16213e,
-			shadowOffset: 10,
+			shadowOffset: 8,
 		});
+		this.infoPanel.y = 200; // Will be repositioned in resize method
 		this.demoContainer.addChild(this.infoPanel);
 
-		// Balance Display
+		// Create a container for bottom UI elements
+		this.bottomUIContainer = new Container();
+		this.bottomUIContainer.y = 200; // Will be repositioned in resize method
+		this.demoContainer.addChild(this.bottomUIContainer);
+
+		// Balance Display - left side of bottom bar
 		this.balanceDisplay = new Label({
 			text: `Balance: $${this.balance.toFixed(2)}`,
 			style: {
-				fontSize: 24,
+				fontSize: 20,
 				fill: 0x00ff88,
 				fontWeight: 'bold',
 			},
 		});
-		this.balanceDisplay.x = -300;
-		this.balanceDisplay.y = -200;
-		this.demoContainer.addChild(this.balanceDisplay);
+		this.balanceDisplay.x = -400;
+		this.balanceDisplay.y = -50;
+		this.bottomUIContainer.addChild(this.balanceDisplay);
 
-		// Bet Display
+		// Bet Display - left-center of bottom bar
 		this.betDisplay = new Label({
 			text: `Bet: $${this.betAmount.toFixed(2)}`,
 			style: {
-				fontSize: 20,
+				fontSize: 18,
 				fill: 0xffff00,
 				fontWeight: 'bold',
 			},
 		});
-		this.betDisplay.x = 0;
-		this.betDisplay.y = -200;
-		this.demoContainer.addChild(this.betDisplay);
+		this.betDisplay.x = -200;
+		this.betDisplay.y = -50;
+		this.bottomUIContainer.addChild(this.betDisplay);
 
-		// Win Display
+		// Win Display - right side of bottom bar
 		this.winDisplay = new Label({
 			text: `Win: $${this.winAmount.toFixed(2)}`,
 			style: {
-				fontSize: 24,
+				fontSize: 20,
 				fill: 0xff4444,
 				fontWeight: 'bold',
 			},
 		});
-		this.winDisplay.x = 300;
-		this.winDisplay.y = -200;
-		this.demoContainer.addChild(this.winDisplay);
+		this.winDisplay.x = 350;
+		this.winDisplay.y = -50;
+		this.bottomUIContainer.addChild(this.winDisplay);
 
-		// Main Play Button
+		// Main Play Button - center of bottom bar, scaled to 0.5
 		this.playButton = new FancyButton({
 			defaultView: 'Playbutton.png',
 			anchor: 0.5,
-			scale: 0.8,
+			scale: 0.5, // Scaled to 0.5 as requested
 			animations: {
-				hover: { props: { scale: { x: 0.85, y: 0.85 } }, duration: 100 },
-				pressed: { props: { scale: { x: 0.75, y: 0.75 } }, duration: 100 },
+				hover: { props: { scale: { x: 0.55, y: 0.55 } }, duration: 100 },
+				pressed: { props: { scale: { x: 0.45, y: 0.45 } }, duration: 100 },
 			},
 		});
-		this.playButton.y = -50;
-		this.demoContainer.addChild(this.playButton);
+		this.playButton.y = -20;
+		this.bottomUIContainer.addChild(this.playButton);
 
-		// Bet Increase Button
+		// Bet Increase Button - right of play button
 		this.betIncreaseButton = new FancyButton({
 			defaultView: 'increase.png',
 			anchor: 0.5,
-			scale: 0.7,
+			scale: 0.5,
 			animations: {
-				hover: { props: { scale: { x: 0.75, y: 0.75 } }, duration: 100 },
-				pressed: { props: { scale: { x: 0.65, y: 0.65 } }, duration: 100 },
+				hover: { props: { scale: { x: 0.55, y: 0.55 } }, duration: 100 },
+				pressed: { props: { scale: { x: 0.45, y: 0.45 } }, duration: 100 },
 			},
 		});
-		this.betIncreaseButton.x = 80;
-		this.betIncreaseButton.y = -50;
-		this.demoContainer.addChild(this.betIncreaseButton);
+		this.betIncreaseButton.x = 100;
+		this.betIncreaseButton.y = -20;
+		this.bottomUIContainer.addChild(this.betIncreaseButton);
 
-		// Bet Decrease Button
+		// Bet Decrease Button - left of play button
 		this.betDecreaseButton = new FancyButton({
 			defaultView: 'decrease.png',
 			anchor: 0.5,
-			scale: 0.7,
+			scale: 0.5,
 			animations: {
-				hover: { props: { scale: { x: 0.75, y: 0.75 } }, duration: 100 },
-				pressed: { props: { scale: { x: 0.65, y: 0.65 } }, duration: 100 },
+				hover: { props: { scale: { x: 0.55, y: 0.55 } }, duration: 100 },
+				pressed: { props: { scale: { x: 0.45, y: 0.45 } }, duration: 100 },
 			},
 		});
-		this.betDecreaseButton.x = -80;
-		this.betDecreaseButton.y = -50;
-		this.demoContainer.addChild(this.betDecreaseButton);
+		this.betDecreaseButton.x = -100;
+		this.betDecreaseButton.y = -20;
+		this.bottomUIContainer.addChild(this.betDecreaseButton);
 
-		// Auto Play Button
+		// Auto Play Button - left side of bottom bar
 		this.autoButton = new FancyButton({
 			defaultView: 'auto.png',
 			anchor: 0.5,
-			scale: 0.6,
+			scale: 0.4,
 			animations: {
-				hover: { props: { scale: { x: 0.65, y: 0.65 } }, duration: 100 },
-				pressed: { props: { scale: { x: 0.55, y: 0.55 } }, duration: 100 },
+				hover: { props: { scale: { x: 0.45, y: 0.45 } }, duration: 100 },
+				pressed: { props: { scale: { x: 0.35, y: 0.35 } }, duration: 100 },
 			},
 		});
-		this.autoButton.x = -200;
-		this.autoButton.y = 50;
-		this.demoContainer.addChild(this.autoButton);
+		this.autoButton.x = -250;
+		this.autoButton.y = 20;
+		this.bottomUIContainer.addChild(this.autoButton);
 
-		// Turbo Button
+		// Turbo Button - left side of bottom bar
 		this.turboButton = new FancyButton({
 			defaultView: 'turbo-off.png',
 			anchor: 0.5,
-			scale: 0.6,
+			scale: 0.4,
 			animations: {
-				hover: { props: { scale: { x: 0.65, y: 0.65 } }, duration: 100 },
-				pressed: { props: { scale: { x: 0.55, y: 0.55 } }, duration: 100 },
+				hover: { props: { scale: { x: 0.45, y: 0.45 } }, duration: 100 },
+				pressed: { props: { scale: { x: 0.35, y: 0.35 } }, duration: 100 },
 			},
 		});
-		this.turboButton.x = -100;
-		this.turboButton.y = 50;
-		this.demoContainer.addChild(this.turboButton);
+		this.turboButton.x = -200;
+		this.turboButton.y = 20;
+		this.bottomUIContainer.addChild(this.turboButton);
 
-		// Volume Button
+		// Volume Button - right side of bottom bar
 		this.volumeButton = new FancyButton({
 			defaultView: 'vol-on.png',
 			anchor: 0.5,
-			scale: 0.6,
+			scale: 0.4,
 			animations: {
-				hover: { props: { scale: { x: 0.65, y: 0.65 } }, duration: 100 },
-				pressed: { props: { scale: { x: 0.55, y: 0.55 } }, duration: 100 },
+				hover: { props: { scale: { x: 0.45, y: 0.45 } }, duration: 100 },
+				pressed: { props: { scale: { x: 0.35, y: 0.35 } }, duration: 100 },
 			},
 		});
-		this.volumeButton.x = 100;
-		this.volumeButton.y = 50;
-		this.demoContainer.addChild(this.volumeButton);
+		this.volumeButton.x = 200;
+		this.volumeButton.y = 20;
+		this.bottomUIContainer.addChild(this.volumeButton);
 
-		// Menu Button
+		// Menu Button - right side of bottom bar
 		this.menuButton = new FancyButton({
 			defaultView: 'menu.png',
 			anchor: 0.5,
+			scale: 0.4,
+			animations: {
+				hover: { props: { scale: { x: 0.45, y: 0.45 } }, duration: 100 },
+				pressed: { props: { scale: { x: 0.35, y: 0.35 } }, duration: 100 },
+			},
+		});
+		this.menuButton.x = 250;
+		this.menuButton.y = 20;
+		this.bottomUIContainer.addChild(this.menuButton);
+
+		// Pause Button (keep at top left of screen, not in bottom bar)
+		this.pauseButton = new FancyButton({
+			defaultView: 'icon-pause.png',
+			anchor: 0.5,
 			scale: 0.6,
 			animations: {
 				hover: { props: { scale: { x: 0.65, y: 0.65 } }, duration: 100 },
 				pressed: { props: { scale: { x: 0.55, y: 0.55 } }, duration: 100 },
 			},
 		});
-		this.menuButton.x = 200;
-		this.menuButton.y = 50;
-		this.demoContainer.addChild(this.menuButton);
-
-		// Pause Button (top left)
-		this.pauseButton = new FancyButton({
-			defaultView: 'icon-pause.png',
-			anchor: 0.5,
-			scale: 0.8,
-			animations: {
-				hover: { props: { scale: { x: 0.85, y: 0.85 } }, duration: 100 },
-				pressed: { props: { scale: { x: 0.75, y: 0.75 } }, duration: 100 },
-			},
-		});
-		this.pauseButton.x = -350;
-		this.pauseButton.y = -220;
+		this.pauseButton.x = -400;
+		this.pauseButton.y = -320;
 		this.demoContainer.addChild(this.pauseButton);
 
-		// Settings Button (top right)
+		// Settings Button (keep at top right of screen, not in bottom bar)
 		this.settingsButton = new FancyButton({
 			defaultView: 'icon-settings.png',
 			anchor: 0.5,
-			scale: 0.8,
+			scale: 0.6,
 			animations: {
-				hover: { props: { scale: { x: 0.85, y: 0.85 } }, duration: 100 },
-				pressed: { props: { scale: { x: 0.75, y: 0.75 } }, duration: 100 },
+				hover: { props: { scale: { x: 0.65, y: 0.65 } }, duration: 100 },
+				pressed: { props: { scale: { x: 0.55, y: 0.55 } }, duration: 100 },
 			},
 		});
-		this.settingsButton.x = 350;
-		this.settingsButton.y = -220;
+		this.settingsButton.x = 400;
+		this.settingsButton.y = -320;
 		this.demoContainer.addChild(this.settingsButton);
 
-		// Back button
+		// Back button - keep at bottom left corner
 		this.backButton = new FancyButton({
 			defaultView: 'rounded-rectangle.png',
 			text: new Label({
@@ -536,15 +556,15 @@ export class WebSDKUIDemo extends Container {
 				},
 			}),
 			textOffset: { x: 0, y: -5 },
-			scale: 0.8,
+			scale: 0.6,
 			anchor: 0.5,
 			animations: {
 				hover: {
-					props: { scale: { x: 0.85, y: 0.85 } },
+					props: { scale: { x: 0.65, y: 0.65 } },
 					duration: 100,
 				},
 				pressed: {
-					props: { scale: { x: 0.75, y: 0.75 } },
+					props: { scale: { x: 0.55, y: 0.55 } },
 					duration: 100,
 				},
 			},
@@ -801,6 +821,15 @@ export class WebSDKUIDemo extends Container {
 		// Position back button
 		this.backButton.x = 80;
 		this.backButton.y = 50;
+
+		// Position bottom UI bar at actual bottom of screen
+		const bottomBarY = (height / 2) - 100; // 100px from bottom edge
+		if (this.infoPanel) {
+			this.infoPanel.y = bottomBarY;
+		}
+		if (this.bottomUIContainer) {
+			this.bottomUIContainer.y = bottomBarY;
+		}
 
 		// Position responsive info
 		this.responsiveContainer.x = 20;
