@@ -43,7 +43,7 @@ export class WebSDKUIDemo extends Container {
 	private menuButton: FancyButton;
 	private pauseButton: FancyButton;
 	private settingsButton: FancyButton;
-	
+
 	// Bet Controls
 	private betIncreaseButton: FancyButton;
 	private betDecreaseButton: FancyButton;
@@ -354,7 +354,7 @@ export class WebSDKUIDemo extends Container {
 		this.pauseButton.onPress.connect(() => {
 			engine().navigation.presentPopup(
 				// Import and use your PausePopup
-				(globalThis as any).PausePopup || Container as any
+				(globalThis as any).PausePopup || (Container as any),
 			);
 		});
 
@@ -362,7 +362,7 @@ export class WebSDKUIDemo extends Container {
 		this.settingsButton.onPress.connect(() => {
 			engine().navigation.presentPopup(
 				// Import and use your SettingsPopup
-				(globalThis as any).SettingsPopup || Container as any
+				(globalThis as any).SettingsPopup || (Container as any),
 			);
 		});
 
@@ -388,13 +388,13 @@ export class WebSDKUIDemo extends Container {
 		// Generate random win (demo logic)
 		const winChance = 0.3; // 30% chance to win
 		const randomValue = utils.randomInteger({ min: 1, max: 100 });
-		
+
 		if (randomValue <= winChance * 100) {
 			// Win scenario
 			const multiplier = utils.randomInteger({ min: 2, max: 10 });
 			this.winAmount = this.betAmount * multiplier;
 			this.balance += this.winAmount;
-			
+
 			// Animate win
 			await this.animateWin();
 		} else {
@@ -417,7 +417,7 @@ export class WebSDKUIDemo extends Container {
 
 	private increaseBet() {
 		const increments = [1, 5, 10, 25, 50, 100];
-		const currentIndex = increments.findIndex(inc => inc >= this.betAmount);
+		const currentIndex = increments.findIndex((inc) => inc >= this.betAmount);
 		const nextIndex = Math.min(currentIndex + 1, increments.length - 1);
 		this.betAmount = increments[nextIndex];
 		this.updateDisplays();
@@ -425,7 +425,7 @@ export class WebSDKUIDemo extends Container {
 
 	private decreaseBet() {
 		const increments = [1, 5, 10, 25, 50, 100];
-		const currentIndex = increments.findIndex(inc => inc >= this.betAmount);
+		const currentIndex = increments.findIndex((inc) => inc >= this.betAmount);
 		const prevIndex = Math.max(currentIndex - 1, 0);
 		this.betAmount = increments[prevIndex];
 		this.updateDisplays();
@@ -433,7 +433,7 @@ export class WebSDKUIDemo extends Container {
 
 	private toggleAutoPlay() {
 		this.isAutoPlaying = !this.isAutoPlaying;
-		
+
 		// Update button appearance based on state
 		if (this.isAutoPlaying) {
 			this.autoButton.tint = 0x00ff88; // Green tint when active
@@ -444,7 +444,7 @@ export class WebSDKUIDemo extends Container {
 
 	private toggleTurbo() {
 		this.isTurboEnabled = !this.isTurboEnabled;
-		
+
 		// Update button texture based on state
 		if (this.isTurboEnabled) {
 			this.turboButton.defaultView = 'turbo-on.png';
@@ -455,7 +455,7 @@ export class WebSDKUIDemo extends Container {
 
 	private toggleSound() {
 		this.isSoundEnabled = !this.isSoundEnabled;
-		
+
 		// Update button texture and engine sound
 		if (this.isSoundEnabled) {
 			this.volumeButton.defaultView = 'vol-on.png';
@@ -479,7 +479,7 @@ export class WebSDKUIDemo extends Container {
 		const originalColor = this.balanceDisplay.style.fill;
 		this.balanceDisplay.style.fill = 0xff0000;
 		this.balanceDisplay.text = 'Insufficient Funds!';
-		
+
 		setTimeout(() => {
 			this.balanceDisplay.style.fill = originalColor;
 			this.updateDisplays();

@@ -27,7 +27,7 @@ export class BettingInterface extends Container {
 	private config = WebSDKIntegration.integration.createButtonConfig({
 		text: 'SPIN',
 		size: 'large',
-		style: 'primary'
+		style: 'primary',
 	});
 
 	constructor() {
@@ -114,17 +114,15 @@ export class BettingInterface extends Container {
 			this.winLabel.y = spacing.xl;
 		} else {
 			// Horizontal layout for landscape
-			WebSDKIntegration.layout.createGrid([
-				this.balanceLabel,
-				this.betLabel,
-				this.playButton,
-				this.winLabel
-			], {
-				columns: 4,
-				spacing: spacing.lg,
-				startX: -300,
-				startY: 0
-			});
+			WebSDKIntegration.layout.createGrid(
+				[this.balanceLabel, this.betLabel, this.playButton, this.winLabel],
+				{
+					columns: 4,
+					spacing: spacing.lg,
+					startX: -300,
+					startY: 0,
+				},
+			);
 		}
 
 		// Apply responsive scaling
@@ -152,7 +150,7 @@ export class BettingInterface extends Container {
 
 			// Calculate result using Web SDK utilities
 			const isWin = utils.randomInteger({ min: 1, max: 100 }) <= 30; // 30% win chance
-			
+
 			if (isWin) {
 				const multiplier = utils.randomInteger({ min: 2, max: 10 });
 				this._winAmount = this._betAmount * multiplier;
@@ -175,7 +173,7 @@ export class BettingInterface extends Container {
 		await animate(
 			this.playButton,
 			{ rotation: originalRotation + Math.PI * 4 },
-			{ duration: 1.0, ease: 'easeOut' }
+			{ duration: 1.0, ease: 'easeOut' },
 		);
 		this.playButton.rotation = originalRotation;
 	}
@@ -193,16 +191,8 @@ export class BettingInterface extends Container {
 		}
 
 		// Scale bounce
-		await animate(
-			this.winLabel.scale,
-			{ x: 1.3, y: 1.3 },
-			{ duration: 0.2, ease: 'backOut' }
-		);
-		await animate(
-			this.winLabel.scale,
-			{ x: 1, y: 1 },
-			{ duration: 0.3, ease: 'backOut' }
-		);
+		await animate(this.winLabel.scale, { x: 1.3, y: 1.3 }, { duration: 0.2, ease: 'backOut' });
+		await animate(this.winLabel.scale, { x: 1, y: 1 }, { duration: 0.3, ease: 'backOut' });
 	}
 
 	private updateDisplays() {
@@ -211,13 +201,13 @@ export class BettingInterface extends Container {
 		this.winLabel.text = `Win: $${this._winAmount.toFixed(2)}`;
 
 		// Update colors based on Web SDK color system
-		this.balanceLabel.style.fill = this._balance > 0 
-			? WebSDKIntegration.ui.colors.success 
-			: WebSDKIntegration.ui.colors.error;
+		this.balanceLabel.style.fill =
+			this._balance > 0 ? WebSDKIntegration.ui.colors.success : WebSDKIntegration.ui.colors.error;
 
-		this.winLabel.style.fill = this._winAmount > 0 
-			? WebSDKIntegration.ui.colors.warning 
-			: WebSDKIntegration.ui.colors.text.muted;
+		this.winLabel.style.fill =
+			this._winAmount > 0
+				? WebSDKIntegration.ui.colors.warning
+				: WebSDKIntegration.ui.colors.text.muted;
 	}
 
 	// Public API methods
@@ -225,17 +215,23 @@ export class BettingInterface extends Container {
 		this.applyResponsiveLayout();
 	}
 
-	public get balance() { return this._balance; }
+	public get balance() {
+		return this._balance;
+	}
 	public set balance(value: number) {
 		this._balance = value;
 		this.updateDisplays();
 	}
 
-	public get betAmount() { return this._betAmount; }
+	public get betAmount() {
+		return this._betAmount;
+	}
 	public set betAmount(value: number) {
 		this._betAmount = Math.max(1, value);
 		this.updateDisplays();
 	}
 
-	public get isPlaying() { return this._isPlaying; }
+	public get isPlaying() {
+		return this._isPlaying;
+	}
 }
