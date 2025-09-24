@@ -156,22 +156,60 @@ export class WebSDKUIDemo extends Container {
 			Texture.from('W.png'), // Special symbols
 		];
 
-		// Create slot machine frame
-		const slotFrame = new RoundedBox({
-			width: this.REEL_WIDTH * this.REELS_COUNT + 40, // Add padding
-			height: this.SYMBOL_SIZE * 3 + 40, // 3 visible rows + padding
-			color: 0xffffff,
-			shadow: true,
-			shadowColor: 0xffffff,
-			shadowOffset: 8,
-		});
-		slotFrame.x = -(slotFrame.width / 17);
-		slotFrame.y = -(slotFrame.height / 3.6);
-		this.symbolsRenderGroup.addChild(slotFrame);
+		// Calculate reel area dimensions
+		const reelAreaWidth = this.REEL_WIDTH * this.REELS_COUNT;
+		const reelAreaHeight = this.SYMBOL_SIZE * 3;
+
+		// Create a gray background for the reel area
+		const reelBg = new Graphics();
+		reelBg.fill({ color: 0x222222, alpha: 0.85 }); // dark gray, slightly transparent
+		reelBg.rect(0, 0, reelAreaWidth, reelAreaHeight);
+		reelBg.endFill();
+
+		// Position and center the background
+		reelBg.x = -(reelAreaWidth / 2);
+		reelBg.y = -(reelAreaHeight / 2);
+
+		// Add the background to the symbolsRenderGroup (behind the reels)
+		this.symbolsRenderGroup.addChild(reelBg);
+
+		// REMOVE the slotFrame/RoundedBox for now
+		// const slotFrame = new RoundedBox({
+		// 	width: this.REEL_WIDTH * this.REELS_COUNT + 40,
+		// 	height: this.SYMBOL_SIZE * 3 + 40,
+		// 	color: 0xffffff,
+		// 	shadow: true,
+		// 	shadowColor: 0xffffff,
+		// 	shadowOffset: 8,
+		// });
+		// slotFrame.x = -(slotFrame.width / 17);
+		// slotFrame.y = -(slotFrame.height / 3.6);
+		// this.symbolsRenderGroup.addChild(slotFrame);
 
 		// Create reel container
 		this.reelContainer = new Container();
 		this.symbolsRenderGroup.addChild(this.reelContainer);
+
+		// Create a mask for the visible reel area (3 rows)
+		const reelMask = new Graphics();
+		const maskWidth = this.REEL_WIDTH * this.REELS_COUNT;
+		const maskHeight = this.SYMBOL_SIZE * 3; // Only 3 visible rows
+		reelMask.rect(0, 0, maskWidth, maskHeight);
+		reelMask.endFill();
+
+		// Position the mask to align with the reelContainer
+		reelMask.x = 0;
+		reelMask.y = 0;
+
+		// Center the mask relative to reelContainer's position
+		this.reelContainer.mask = reelMask;
+		this.symbolsRenderGroup.addChild(reelMask);
+
+		// Center the reelContainer and mask together
+		this.reelContainer.x = -(maskWidth / 2);
+		this.reelContainer.y = -(maskHeight / 2); // Center 3 visible rows
+		reelMask.x = this.reelContainer.x;
+		reelMask.y = this.reelContainer.y;
 
 		// Build the reels
 		for (let i = 0; i < this.REELS_COUNT; i++) {
