@@ -173,18 +173,21 @@ export class WebSDKUIDemo extends Container {
 		// Add the background to the symbolsRenderGroup (behind the reels)
 		this.symbolsRenderGroup.addChild(reelBg);
 
-		// REMOVE the slotFrame/RoundedBox for now
-		// const slotFrame = new RoundedBox({
-		// 	width: this.REEL_WIDTH * this.REELS_COUNT + 40,
-		// 	height: this.SYMBOL_SIZE * 3 + 40,
-		// 	color: 0xffffff,
-		// 	shadow: true,
-		// 	shadowColor: 0xffffff,
-		// 	shadowOffset: 8,
-		// });
-		// slotFrame.x = -(slotFrame.width / 17);
-		// slotFrame.y = -(slotFrame.height / 3.6);
-		// this.symbolsRenderGroup.addChild(slotFrame);
+		// Add a UI bar section below the reel area for balance and win display
+		const uiBarHeight = 60;
+		const uiBarColor = 0x1a1a2e; // Same as your infoPanel color
+		const uiBarAlpha = 0.95;
+
+		const uiBar = new Graphics();
+		uiBar.fill({ color: uiBarColor, alpha: uiBarAlpha });
+		uiBar.rect(
+			-(reelAreaWidth / 2),
+			reelAreaHeight / 2, // Position directly below the reel area
+			reelAreaWidth,
+			uiBarHeight,
+		);
+		uiBar.endFill();
+		this.symbolsRenderGroup.addChild(uiBar);
 
 		// Create reel container
 		this.reelContainer = new Container();
@@ -406,9 +409,9 @@ export class WebSDKUIDemo extends Container {
 		this.infoPanel = new RoundedBox({
 			width: 900,
 			height: 100, // Smaller height for bottom bar
-			color: 0x1a1a2e,
+			color: 0x00bf,
 			shadow: true,
-			shadowColor: 0x16213e,
+			shadowColor: 0x00bf,
 			shadowOffset: 8,
 		});
 		this.infoPanel.y = 200; // Will be repositioned in resize method
@@ -428,8 +431,8 @@ export class WebSDKUIDemo extends Container {
 				fontWeight: 'bold',
 			},
 		});
-		this.balanceDisplay.x = -400;
-		this.balanceDisplay.y = -50;
+		this.balanceDisplay.x = -240;
+		this.balanceDisplay.y = -220;
 		this.bottomUIContainer.addChild(this.balanceDisplay);
 
 		// Bet Display - left-center of bottom bar
@@ -441,8 +444,8 @@ export class WebSDKUIDemo extends Container {
 				fontWeight: 'bold',
 			},
 		});
-		this.betDisplay.x = -200;
-		this.betDisplay.y = -50;
+		this.betDisplay.x = 300;
+		this.betDisplay.y = -30;
 		this.bottomUIContainer.addChild(this.betDisplay);
 
 		// Win Display - right side of bottom bar
@@ -454,8 +457,8 @@ export class WebSDKUIDemo extends Container {
 				fontWeight: 'bold',
 			},
 		});
-		this.winDisplay.x = 350;
-		this.winDisplay.y = -50;
+		this.winDisplay.x = 180;
+		this.winDisplay.y = -220;
 		this.bottomUIContainer.addChild(this.winDisplay);
 
 		// Main Play Button - center of bottom bar, scaled to 0.5
@@ -464,8 +467,8 @@ export class WebSDKUIDemo extends Container {
 			anchor: 0.5,
 			scale: 0.5, // Scaled to 0.5 as requested
 			animations: {
-				hover: { props: { scale: { x: 0.55, y: 0.55 } }, duration: 100 },
-				pressed: { props: { scale: { x: 0.45, y: 0.45 } }, duration: 100 },
+				hover: { props: { scale: { x: 0.95, y: 0.95 } }, duration: 100 },
+				pressed: { props: { scale: { x: 0.85, y: 0.85 } }, duration: 100 },
 			},
 		});
 		this.playButton.y = -20;
@@ -477,8 +480,8 @@ export class WebSDKUIDemo extends Container {
 			anchor: 0.5,
 			scale: 1.2,
 			animations: {
-				hover: { props: { scale: { x: 0.55, y: 0.55 } }, duration: 100 },
-				pressed: { props: { scale: { x: 0.45, y: 0.45 } }, duration: 100 },
+				hover: { props: { scale: { x: 0.95, y: 0.95 } }, duration: 100 },
+				pressed: { props: { scale: { x: 0.85, y: 0.85 } }, duration: 100 },
 			},
 		});
 		this.betIncreaseButton.x = 100;
@@ -491,8 +494,8 @@ export class WebSDKUIDemo extends Container {
 			anchor: 0.5,
 			scale: 1.2,
 			animations: {
-				hover: { props: { scale: { x: 0.55, y: 0.55 } }, duration: 100 },
-				pressed: { props: { scale: { x: 0.45, y: 0.45 } }, duration: 100 },
+				hover: { props: { scale: { x: 0.95, y: 0.95 } }, duration: 100 },
+				pressed: { props: { scale: { x: 0.85, y: 0.85 } }, duration: 100 },
 			},
 		});
 		this.betDecreaseButton.x = -100;
@@ -505,8 +508,8 @@ export class WebSDKUIDemo extends Container {
 			anchor: 0.5,
 			scale: 1.2,
 			animations: {
-				hover: { props: { scale: { x: 0.45, y: 0.45 } }, duration: 100 },
-				pressed: { props: { scale: { x: 0.35, y: 0.35 } }, duration: 100 },
+				hover: { props: { scale: { x: 0.95, y: 0.95 } }, duration: 100 },
+				pressed: { props: { scale: { x: 0.85, y: 0.85 } }, duration: 100 },
 			},
 		});
 		this.autoButton.x = -250;
@@ -519,8 +522,8 @@ export class WebSDKUIDemo extends Container {
 			anchor: 0.5,
 			scale: 1.2,
 			animations: {
-				hover: { props: { scale: { x: 0.45, y: 0.45 } }, duration: 100 },
-				pressed: { props: { scale: { x: 0.35, y: 0.35 } }, duration: 100 },
+				hover: { props: { scale: { x: 0.95, y: 0.95 } }, duration: 100 },
+				pressed: { props: { scale: { x: 0.85, y: 0.85 } }, duration: 100 },
 			},
 		});
 		this.turboButton.x = -200;
@@ -533,8 +536,8 @@ export class WebSDKUIDemo extends Container {
 			anchor: 0.5,
 			scale: 1,
 			animations: {
-				hover: { props: { scale: { x: 0.45, y: 0.45 } }, duration: 100 },
-				pressed: { props: { scale: { x: 0.35, y: 0.35 } }, duration: 100 },
+				hover: { props: { scale: { x: 0.95, y: 0.95 } }, duration: 100 },
+				pressed: { props: { scale: { x: 0.85, y: 0.85 } }, duration: 100 },
 			},
 		});
 		this.volumeButton.x = 200;
@@ -545,10 +548,10 @@ export class WebSDKUIDemo extends Container {
 		this.menuButton = new FancyButton({
 			defaultView: 'menu.png',
 			anchor: 0.5,
-			scale: 2,
+			scale: 2.5,
 			animations: {
-				hover: { props: { scale: { x: 0.45, y: 0.45 } }, duration: 100 },
-				pressed: { props: { scale: { x: 0.35, y: 0.35 } }, duration: 100 },
+				hover: { props: { scale: { x: 0.95, y: 0.95 } }, duration: 100 },
+				pressed: { props: { scale: { x: 0.85, y: 0.85 } }, duration: 100 },
 			},
 		});
 		this.menuButton.x = -350;
